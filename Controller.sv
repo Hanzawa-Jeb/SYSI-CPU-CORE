@@ -161,7 +161,7 @@ module controller (
 
             JAL_OPCODE: begin
                 // JAL
-                immgen_op = U_IMM;
+                immgen_op = UJ_IMM;
                 alu_op = ALU_ADD;
                 alu_asel = ASEL_PC;
                 alu_bsel = BSEL_IMM;
