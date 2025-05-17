@@ -197,6 +197,46 @@ module controller (
                 wb_sel = WB_SEL_ALU;
             end
 
+            IMMW_OPCODE: begin  // ADDIW等立即数W指令
+                immgen_op = I_IMM;
+                alu_asel = ASEL_REG;
+                alu_bsel = BSEL_IMM;
+                wb_sel = WB_SEL_ALU;
+                case(funct3)
+                    3'b000:  alu_op = ALU_ADDW; // ADDIW
+                    3'b001:  alu_op = ALU_SLLW; // SLLIW
+                    3'b101:  begin
+                        if (funct7[5]) 
+                            alu_op = ALU_SRAW; // SRAIW
+                        else 
+                            alu_op = ALU_SRLW; // SRLIW
+                    end
+                    default: alu_op = ALU_ADDW;
+                endcase
+            end
+
+            REGW_OPCODE: begin  // ADDW等寄存器W指令
+                alu_asel = ASEL_REG;
+                alu_bsel = BSEL_REG;
+                wb_sel = WB_SEL_ALU;
+                case(funct3)
+                    3'b000:  begin
+                        if (funct7[5]) 
+                            alu_op = ALU_SUBW; // SUBW
+                        else 
+                            alu_op = ALU_ADDW; // ADDW
+                    end
+                    3'b001:  alu_op = ALU_SLLW; // SLLW
+                    3'b101:  begin
+                        if (funct7[5])
+                            alu_op = ALU_SRAW; // SRAW
+                        else
+                            alu_op = ALU_SRLW; // SRLW
+                    end
+                    default: alu_op = ALU_ADDW;
+                endcase
+            end
+
             default: begin
                 // Default/Invalid instruction
                 immgen_op = I_IMM;
